@@ -38,6 +38,9 @@ services:
 
     container_name: vpn_postgres
 
+    ports:
+      - "5432:5432"
+
     environment:
       POSTGRES_DB: vpn
       POSTGRES_USER: vpn

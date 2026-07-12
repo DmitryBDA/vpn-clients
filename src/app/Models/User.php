@@ -15,6 +15,12 @@ use Spatie\Permission\Traits\HasRoles;
 #[Hidden(['password', 'remember_token'])]
 class User extends Authenticatable
 {
+    protected $fillable = [
+        'name',
+        'email',
+        'password',
+        'settings'
+    ];
     /** @use HasFactory<UserFactory> */
     use HasFactory, Notifiable;
     use HasRoles;
@@ -28,6 +34,12 @@ class User extends Authenticatable
         return [
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
+            'settings' => 'array',
         ];
+    }
+
+    public function getLinksAttribute()
+    {
+        return $this->settings['links'] ?? [];
     }
 }
