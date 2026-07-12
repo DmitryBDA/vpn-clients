@@ -47,12 +47,12 @@
                                     <div class="row mb-3">
                                         <label for="inputEmail3" class="col-sm-2 col-form-label">ссылка</label>
                                         <div class="col-sm-10">
-                                            <input
-                                                type="text"
+                                            <textarea
                                                 class="form-control"
+                                                id="settings"
                                                 name="settings"
-                                                value="{{ $user->links[0] }}"
-                                            >
+                                                rows="5"
+                                            >{{ $user->links[0] }}</textarea>
                                         </div>
                                     </div>
                                 </div>

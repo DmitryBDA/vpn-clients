@@ -47,12 +47,12 @@
                                     <div class="row mb-3">
                                         <label for="inputPassword3" class="col-sm-2 col-form-label">Ссылка</label>
                                         <div class="col-sm-10">
-                                            <input
-                                                type="text"
-                                                class="form-control"
-                                                name="settings"
-                                                value="{{ old('settings') }}"
-                                            >
+                                             <textarea
+                                                 class="form-control"
+                                                 id="settings"
+                                                 name="settings"
+                                                 rows="5"
+                                             >{{ old('settings') }}</textarea>
                                         </div>
                                     </div>
                                 </div>
