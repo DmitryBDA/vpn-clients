@@ -1,0 +1,5 @@
+sub.mybelousovdomen.ru {
+    encode gzip
+
+    reverse_proxy nginx:80
+}

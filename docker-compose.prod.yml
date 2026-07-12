@@ -1,0 +1,26 @@
+services:
+
+  caddy:
+    image: caddy:2
+    container_name: vpn_caddy
+    restart: unless-stopped
+
+    ports:
+      - "80:80"
+      - "443:443"
+
+    volumes:
+      - ./Caddyfile:/etc/caddy/Caddyfile:ro
+      - caddy_data:/data
+      - caddy_config:/config
+
+    depends_on:
+      - nginx
+
+  nginx:
+    ports:
+      - "127.0.0.1:8080:80"
+
+volumes:
+  caddy_data:
+  caddy_config:
