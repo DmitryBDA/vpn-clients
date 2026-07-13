@@ -759,6 +759,22 @@
     const sparkline3 = new ApexCharts(document.querySelector('#sparkline-3'), option_sparkline3);
     sparkline3.render();
 </script>
+
+
+<script>
+    function copySubscriberLink(name) {
+        const url = "{{ config('app.url') }}/subscribers/" + encodeURIComponent(name);
+
+        navigator.clipboard.writeText(url)
+            .then(() => {
+                alert('Ссылка скопирована!');
+            })
+            .catch(() => {
+                alert('Не удалось скопировать ссылку');
+            });
+    }
+</script>
+
 <!--end::Script-->
 </body>
 <!--end::Body-->

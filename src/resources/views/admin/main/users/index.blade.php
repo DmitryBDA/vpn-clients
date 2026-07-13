@@ -51,6 +51,13 @@
                                             <td>
                                                 <a rel="stylesheet" href="{{route('admin.index.users.edit', ['id' => $user->id])}}">{{ $user->name }}</td>
                                             <td>
+                                                <button
+                                                    type="button"
+                                                    class="btn btn-primary btn-sm"
+                                                    onclick="copySubscriberLink('{{ $user->name }}')">
+                                                    Копировать ссылку
+                                                </button>
+
                                                 <form action="{{ route('admin.index.users.delete', ['id' => $user->id]) }}"
                                                       method="POST"
                                                       style="display:inline">
