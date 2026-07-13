@@ -22,3 +22,7 @@ Route::group(['namespace' => 'Admin', 'prefix' => 'admin'], function () {
     Route::delete('/users/{id}', [UserController::class, 'delete'])->name('admin.index.users.delete');
 
 });
+
+Auth::routes();
+
+Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
