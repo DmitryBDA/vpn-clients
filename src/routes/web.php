@@ -3,6 +3,7 @@
 use App\Http\Controllers\Admin\Main\IndexController;
 use App\Http\Controllers\Admin\Main\UserController;
 use App\Http\Controllers\SubscribersController;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
@@ -11,7 +12,7 @@ Route::get('/', function () {
 
 Route::get('/subscribers/{name}', [SubscribersController::class, 'show'])->name('index.subscribers.show');
 
-Route::group(['namespace' => 'Admin', 'prefix' => 'admin'], function () {
+Route::group(['namespace' => 'Admin', 'prefix' => 'admin', 'middleware' => ['auth', 'role:admin']], function () {
     Route::get('/', [IndexController::class, 'index'])->name('admin.index');
     Route::get('/users', [UserController::class, 'index'])->name('admin.index.users');
     Route::get('/users/create', [UserController::class, 'create'])->name('admin.index.users.create');

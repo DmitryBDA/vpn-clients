@@ -7,12 +7,15 @@ use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Log;
+use Spatie\Permission\Models\Role;
 
 class UserController extends Controller
 {
     public function index()
     {
-        $users = User::all();
+        $users = User::with('roles')->get()->filter(
+            fn ($user) => $user->roles->where('name', 'user')->toArray()
+        );
         return view('admin.main.users.index', ['users' => $users]);
     }
 
@@ -24,7 +27,7 @@ class UserController extends Controller
     public function store(Request $request)
     {
 
-        User::query()->create([
+        $user = User::query()->create([
             'name' => $request->name,
             'email' => $request->name . '@gmail.com',
             'settings' => [
@@ -34,6 +37,10 @@ class UserController extends Controller
             ],
             'password' => Hash::make(123123123),
         ]);
+
+        $userRole = Role::findOrCreate('user');
+
+        $user->assignRole($userRole);
 
         return redirect()->route('admin.index.users');
     }
