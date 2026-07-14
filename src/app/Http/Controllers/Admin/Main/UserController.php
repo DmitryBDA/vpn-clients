@@ -3,50 +3,52 @@
 namespace App\Http\Controllers\Admin\Main;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\UserStoreRequest;
+use App\Http\Requests\UserUpdateRequest;
 use App\Models\User;
+use App\Repositories\RoleRepository;
+use App\Repositories\UserRepository;
+use App\Services\UserService;
+use Illuminate\Contracts\View\View;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Hash;
-use Illuminate\Support\Facades\Log;
-use Spatie\Permission\Models\Role;
+use Illuminate\Http\Response;
 
 class UserController extends Controller
 {
-    public function index()
+    public function __construct(
+        protected UserRepository $userRepository,
+        protected UserService $userService,
+        protected RoleRepository $roleRepository,
+    )
     {
-        $users = User::with('roles')->get()->filter(
-            fn ($user) => $user->roles->where('name', 'user')->toArray()
-        );
-        return view('admin.main.users.index', ['users' => $users]);
     }
 
-    public function create()
+    public function index(): View
+    {
+        $users = $this->userRepository->getWithRoleUser();
+
+        return view('admin.main.users.index', compact('users'));
+    }
+
+    public function create(): View
     {
         return view('admin.main.users.create');
     }
 
-    public function store(Request $request)
+    public function store(UserStoreRequest $request): RedirectResponse
     {
+        $userStoreData = $this->userService->createFromRequest($request);
+        $user = $this->userRepository->create($userStoreData);
 
-        $user = User::query()->create([
-            'name' => $request->name,
-            'email' => $request->name . '@gmail.com',
-            'settings' => [
-                'links' => [
-                    $request->settings
-                ],
-            ],
-            'password' => Hash::make(123123123),
-        ]);
-
-        $userRole = Role::findOrCreate('user');
-
-        $user->assignRole($userRole);
+        $userRole = $this->roleRepository->findOrCreateByName('user');
+        $this->userService->assignRole($user, $userRole);
 
         return redirect()->route('admin.index.users');
     }
-    public function update($id, Request $request)
+    public function update($id, UserUpdateRequest $request): RedirectResponse
     {
-        $user = User::query()->findOrFail($id);
+        $user = $this->userRepository->findOrFail($id);
 
         $user->update([
             'name' => $request->name,
@@ -60,22 +62,15 @@ class UserController extends Controller
         return redirect()->route('admin.index.users');
     }
 
-    public function show($name)
+    public function edit($id): View
     {
-        $user = User::query()->where('name', $name)->first();
-
-        return response($user->vless_link);
-    }
-
-    public function edit($id)
-    {
-        $user = User::find($id);
+        $user = $this->userRepository->findOrFail($id);
         return view('admin.main.users.edit', ['user' => $user]);
     }
-    public function delete($id)
+    public function delete($id): RedirectResponse
     {
-        $user = User::find($id);
-        $user->delete();
+        $user = $this->userRepository->findOrFail($id);
+        $this->userRepository->delete($user);
         return redirect()->back()->with('success', 'Пользователь удален');
     }
 }
